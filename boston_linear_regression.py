@@ -1,19 +1,21 @@
-#%% Importing all the libraries for; loading datasets, running linear regression and plotting graphs
+#%% Importing all the libraries for; splitting data, running linear regression and plotting graphs
 import random
+import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.datasets import load_boston
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 import matplotlib.pyplot as plt
 
 #%% Loading Datasets
-boston_data = load_boston()
-
+boston_data = pd.read_csv(r"C:\Users\Ahsan\Desktop\AIcodes\housing.csv")
 #%% Seperating independent and dependent variables respectively (X=features(13), y=target(median value of home in $1000))
-X, y = boston_data.data, boston_data.target
+X = boston_data.iloc[:, :-1]
+y = boston_data.iloc[:,-1]
+print(boston_data.shape)
 
 #%% Converting to list and print its dimensions
 tuples = list(zip(X, y))
-print(boston_data.data.shape)
+print(boston_data.shape)
 
 #%% Creating seed values, and lists for MSE and Regression score
 seeds = [1,2,3,4,5,6,7,8,9,10]
@@ -34,14 +36,14 @@ for seed in seeds:
     # Running LinearRegression
     model = LinearRegression()
     model.fit(X_train, y_train)
-    
+    y_pred = model.predict(X_test)
     # getting R2 score for each sample of data
     score = model.score(X_test, y_test)
     r2_scores.append(score)
     print("Seed", seed, "Regression score:", score)
     
     # getting MSE score for each sample of data
-    mse = ((model.predict(X_test) - y_test)**2).mean()
+    mse = mean_squared_error(y_test, y_pred)
     mse_list.append(mse)
     print("Seed", seed, "MSE:", mse)
 
